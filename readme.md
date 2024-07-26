@@ -1,6 +1,6 @@
 # Brief
 
-仿照[ascend/pytorch](https://github.com/ascend/pytorch)写的pytorch backend，基于PrivateUse1，torch==2.3，理论上 2.2 应该也可以跑，没试过。
+仿照[ascend/pytorch](https://github.com/ascend/pytorch)写的pytorch backend，基于PrivateUse1，torch==2.3，理论上 2.2 应该也可以跑，没试过。吐槽下，ascend_pytorch的setup.py也太老了，不更新成最新的。
 
 # useage
 
