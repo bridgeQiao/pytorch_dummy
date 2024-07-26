@@ -9,7 +9,7 @@
 cd pytorch_dummy
 python3 setup.py build_ext --inplace
 ```
-需要预先安装好torch包，正常编译会得到`dummy_backend.*.so`。
+需要预先安装好torch包，正常编译会得到`torch_dpu/_C.*.so`。
 
 ## use it
 
@@ -17,7 +17,6 @@ python3 setup.py build_ext --inplace
 ```python
 import torch
 import torch_dummy
-torch.ops.load_library('dummy_backend.cpython-312-darwin.so')
 # only support aten::empty/aten::add, you need implement more kernels if you want
 x = torch.empty((2,2,), device='privateuseone')
 y = torch.empty((2,2,), device='privateuseone')
