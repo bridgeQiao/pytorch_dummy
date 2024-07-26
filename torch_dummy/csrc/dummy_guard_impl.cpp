@@ -11,7 +11,7 @@ constexpr c10::DeviceType DPUGuardImpl::static_type;
 C10_REGISTER_GUARD_IMPL(PrivateUse1, DPUGuardImpl);
 
 int rename_privateuse1_backend() {
-  c10::register_privateuse1_backend("dummy");
+  c10::register_privateuse1_backend("dpu");
   c10::SetStorageImplCreate(
       c10::DeviceType::PrivateUse1,
       (c10::StorageImplCreateHelper)&torch_dummy::make_dummy_storage_impl);
