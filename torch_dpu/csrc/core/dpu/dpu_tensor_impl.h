@@ -1,10 +1,10 @@
 #pragma once
 
-#include "torch_dummy/csrc/dummy_storage_impl.h"
+#include "torch_dpu/csrc/core/dpu_storage_impl.h"
 #include <ATen/Tensor.h>
 #include <c10/core/TensorImpl.h>
 
-namespace torch_dummy {
+namespace torch_dpu {
 
 // DPUTensorImpl class is derived from c10::TensorImpl, and it is only used to
 // handle an DPU tensor. Its scope is just to handle an DPUTensor.
@@ -36,4 +36,4 @@ public:
   ~DPUTensorImpl();
 };
 
-} // namespace torch_dummy
+} // namespace torch_dpu

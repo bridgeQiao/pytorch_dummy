@@ -1,5 +1,5 @@
-#include "torch_dummy/csrc/dummy_guard_impl.h"
-#include "torch_dummy/csrc/dummy_storage_impl.h"
+#include "torch_dpu/csrc/core/dpu_guard_impl.h"
+#include "torch_dpu/csrc/core/dpu_storage_impl.h"
 
 #include <c10/core/StorageImpl.h>
 
@@ -14,7 +14,7 @@ int rename_privateuse1_backend() {
   c10::register_privateuse1_backend("dpu");
   c10::SetStorageImplCreate(
       c10::DeviceType::PrivateUse1,
-      (c10::StorageImplCreateHelper)&torch_dummy::make_dummy_storage_impl);
+      (c10::StorageImplCreateHelper)&torch_dpu::make_dummy_storage_impl);
   return 0;
 }
 static const int _temp_dummy = rename_privateuse1_backend();

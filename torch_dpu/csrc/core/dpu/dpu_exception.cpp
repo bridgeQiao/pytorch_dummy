@@ -1,4 +1,4 @@
-#include "torch_dummy/csrc/dummy_exception.h"
+#include "torch_dpu/csrc/core/dpu_exception.h"
 
 #include <unistd.h>
 

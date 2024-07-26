@@ -7,7 +7,7 @@
 #include <c10/util/typeid.h>
 #include <c10/util/order_preserving_flat_hash_map.h>
 
-namespace torch_dummy {
+namespace torch_dpu {
 
 struct DPUStorageDesc {
 public:
@@ -51,4 +51,4 @@ c10::intrusive_ptr<c10::StorageImpl> make_dummy_storage_impl(
     c10::Allocator* allocator,
     bool resizable);
 
-} // namespace torch_dummy
+} // namespace torch_dpu

@@ -4,10 +4,9 @@
 #include <cstdio>
 #include <torch/extension.h>
 
-#include "dummy_storage_impl.h"
-#include "torch_dummy/csrc/dummy_exception.h"
-#include "torch_dummy/csrc/dummy_storage_impl.h"
-#include "torch_dummy/csrc/dummy_tensor_impl.h"
+#include "torch_dpu/csrc/core/dpu_exception.h"
+#include "torch_dpu/csrc/core/dpu_storage_impl.h"
+#include "torch_dpu/csrc/core/dpu_tensor_impl.h"
 
 at::Tensor empty_dummy(c10::IntArrayRef size,
                      c10::optional<at::ScalarType> dtype_opt,
@@ -23,12 +22,12 @@ at::Tensor empty_dummy(c10::IntArrayRef size,
   auto dtype = c10::scalarTypeToTypeMeta(dtype_or_default(dtype_opt));
   int64_t size_bytes = nelements * dtype.itemsize();
   c10::intrusive_ptr<c10::StorageImpl> storage_impl =
-      c10::make_intrusive<torch_dummy::DPUStorageImpl>(
+      c10::make_intrusive<torch_dpu::DPUStorageImpl>(
           c10::StorageImpl::use_byte_size_t(), size_bytes,
           allocator->allocate(size_bytes), allocator, true);
 
   auto tensor =
-      at::detail::make_tensor<torch_dummy::DPUTensorImpl>(storage_impl, dtype);
+      at::detail::make_tensor<torch_dpu::DPUTensorImpl>(storage_impl, dtype);
 
   // Default at::TensorImpl has size [0]
   if (size.size() != 1 || size[0] != 0) {

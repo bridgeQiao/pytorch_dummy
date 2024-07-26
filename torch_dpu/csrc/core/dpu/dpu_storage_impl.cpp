@@ -1,6 +1,6 @@
-#include "torch_dummy/csrc/dummy_storage_impl.h"
+#include "torch_dpu/csrc/core/dpu_storage_impl.h"
 
-namespace torch_dummy {
+namespace torch_dpu {
 
 DPUStorageImpl::DPUStorageImpl(use_byte_size_t use_byte_size, size_t size_bytes,
                                at::DataPtr data_ptr, at::Allocator *allocator,
@@ -28,4 +28,4 @@ make_dummy_storage_impl(c10::StorageImpl::use_byte_size_t, c10::SymInt size_byte
   return dummy_storage_impl;
 }
 
-} // namespace torch_dummy
+} // namespace torch_dpu

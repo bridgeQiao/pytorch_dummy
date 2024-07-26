@@ -1,13 +1,13 @@
 #include <c10/core/ScalarType.h>
 #include <c10/core/impl/DeviceGuardImplInterface.h>
 #include <c10/macros/Macros.h>
-// #include "torch_dummy/csrc/core/dummy/DPUStream.h"
+// #include "torch_dpu/csrc/core/dummy/DPUStream.h"
 
-// #include "torch_dummy/csrc/framework/StorageDescHelper.h"
-#include "torch_dummy/csrc/dummy_tensor_impl.h"
-#include "torch_dummy/csrc/dummy_storage_impl.h"
+// #include "torch_dpu/csrc/framework/StorageDescHelper.h"
+#include "torch_dpu/csrc/core/dpu_tensor_impl.h"
+#include "torch_dpu/csrc/core/dpu_storage_impl.h"
 
-namespace torch_dummy
+namespace torch_dpu
 {
   DPUTensorImpl::DPUTensorImpl(c10::Storage &&storage, const caffe2::TypeMeta &data_type)
       : c10::TensorImpl(std::move(storage),

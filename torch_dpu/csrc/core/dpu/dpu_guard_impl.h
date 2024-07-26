@@ -2,7 +2,7 @@
 
 #include <c10/core/impl/DeviceGuardImplInterface.h>
 #include <c10/macros/Macros.h>
-#include "torch_dummy/csrc/dummy_exception.h"
+#include "torch_dpu/csrc/core/dpu_exception.h"
 #include <cassert>
 
 namespace c10_dummy {
