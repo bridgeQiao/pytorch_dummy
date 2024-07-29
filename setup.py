@@ -11,7 +11,9 @@ setup(
     license="BSD License",
     ext_modules=[CppExtension('torch_dpu._C',
                               include_dirs=[os.path.abspath('./')],
-                              sources=glob.glob('./torch_dpu/csrc/**.cpp'),
+                              sources=glob.glob('./torch_dpu/csrc/*.cpp') +
+                                  glob.glob('./torch_dpu/csrc/*/*.cpp') +
+                                  glob.glob('./torch_dpu/csrc/*/*/*.cpp'),
                               library_dirs=[torch_path + '/lib'],
                               extra_compile_args=['-O0', '-g'],
                               runtime_library_dirs=[torch_path + '/lib'])],

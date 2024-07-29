@@ -1,11 +1,9 @@
 #include <c10/core/ScalarType.h>
 #include <c10/core/impl/DeviceGuardImplInterface.h>
 #include <c10/macros/Macros.h>
-// #include "torch_dpu/csrc/core/dummy/DPUStream.h"
 
-// #include "torch_dpu/csrc/framework/StorageDescHelper.h"
-#include "torch_dpu/csrc/core/dpu_tensor_impl.h"
-#include "torch_dpu/csrc/core/dpu_storage_impl.h"
+#include "torch_dpu/csrc/core/dpu/dpu_tensor_impl.h"
+#include "torch_dpu/csrc/core/dpu/dpu_storage_impl.h"
 
 namespace torch_dpu
 {

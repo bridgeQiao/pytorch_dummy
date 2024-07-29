@@ -4,9 +4,9 @@
 #include <cstdio>
 #include <torch/extension.h>
 
-#include "torch_dpu/csrc/core/dpu_exception.h"
-#include "torch_dpu/csrc/core/dpu_storage_impl.h"
-#include "torch_dpu/csrc/core/dpu_tensor_impl.h"
+#include "torch_dpu/csrc/core/dpu/dpu_exception.h"
+#include "torch_dpu/csrc/core/dpu/dpu_storage_impl.h"
+#include "torch_dpu/csrc/core/dpu/dpu_tensor_impl.h"
 
 at::Tensor empty_dummy(c10::IntArrayRef size,
                      c10::optional<at::ScalarType> dtype_opt,

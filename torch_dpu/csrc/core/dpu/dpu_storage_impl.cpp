@@ -1,4 +1,4 @@
-#include "torch_dpu/csrc/core/dpu_storage_impl.h"
+#include "torch_dpu/csrc/core/dpu/dpu_storage_impl.h"
 
 namespace torch_dpu {
 

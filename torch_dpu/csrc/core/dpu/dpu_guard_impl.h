@@ -2,7 +2,7 @@
 
 #include <c10/core/impl/DeviceGuardImplInterface.h>
 #include <c10/macros/Macros.h>
-#include "torch_dpu/csrc/core/dpu_exception.h"
+#include "torch_dpu/csrc/core/dpu/dpu_exception.h"
 #include <cassert>
 
 namespace c10_dummy {
@@ -29,11 +29,9 @@ struct DPUGuardImpl final : public c10::impl::DeviceGuardImplInterface {
   }
   c10::Device getDevice() const override {
       int device = 0;
-      // mfrtGetDevice(&device);
       return c10::Device(c10::DeviceType::PrivateUse1, device);
   }
   void setDevice(c10::Device d) const override {
-      // mfrtSetDevice(d.index());
   }
   void uncheckedSetDevice(c10::Device d) const noexcept override {}
   c10::Stream getStream(c10::Device d) const noexcept override {
@@ -44,7 +42,6 @@ struct DPUGuardImpl final : public c10::impl::DeviceGuardImplInterface {
   }
   c10::DeviceIndex deviceCount() const noexcept override {
       int device_count = 0;
-      // mfrtGetDeviceCount(&device_count);
       return 1;
   }
 };
