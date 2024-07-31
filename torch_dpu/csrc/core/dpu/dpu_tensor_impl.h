@@ -31,8 +31,8 @@ public:
 public:
   DPUTensorImpl(const DPUTensorImpl &) = delete;
   DPUTensorImpl &operator=(const DPUTensorImpl &) = delete;
-  DPUTensorImpl(DPUTensorImpl &&) = default;
-  DPUTensorImpl &operator=(DPUTensorImpl &&) = default;
+  DPUTensorImpl(DPUTensorImpl &&) = delete;
+  DPUTensorImpl &operator=(DPUTensorImpl &&) = delete;
   ~DPUTensorImpl();
 };
 

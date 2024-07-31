@@ -16,7 +16,7 @@ python3 setup.py build_ext --inplace
 启动python，然后输入：
 ```python
 import torch
-import torch_dummy
+import torch_dpu
 # only support aten::empty/aten::add, you need implement more kernels if you want
 x = torch.empty((2,2,), device='privateuseone')
 y = torch.empty((2,2,), device='privateuseone')

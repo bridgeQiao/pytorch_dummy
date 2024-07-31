@@ -41,8 +41,8 @@ struct DPUGuardImpl final : public c10::impl::DeviceGuardImplInterface {
       return s;
   }
   c10::DeviceIndex deviceCount() const noexcept override {
-      int device_count = 0;
-      return 1;
+      int device_count = 1;
+      return device_count;
   }
 };
 
