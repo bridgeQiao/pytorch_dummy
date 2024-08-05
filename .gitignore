@@ -2,3 +2,6 @@ build/
 *.pyc
 __pycache__/
 *.so
+PrivateUse1NativeFunctions.h
+RegisterPrivateUse1.cpp
+

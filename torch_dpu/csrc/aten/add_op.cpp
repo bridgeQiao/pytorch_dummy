@@ -4,16 +4,17 @@
 #include <cstdio>
 #include <torch/extension.h>
 
+#include "torch_dpu/csrc/aten/PrivateUse1NativeFunctions.h"
+
 #include "torch_dpu/csrc/core/dpu/dpu_exception.h"
 #include "torch_dpu/csrc/core/dpu/dpu_storage_impl.h"
 #include "torch_dpu/csrc/core/dpu/dpu_tensor_impl.h"
 
-at::Tensor empty_dummy(c10::IntArrayRef size,
-                       c10::optional<at::ScalarType> dtype_opt,
-                       c10::optional<c10::Layout> layout_opt,
-                       c10::optional<c10::Device> device_opt,
-                       c10::optional<bool> pin_memory_opt,
-                       c10::optional<c10::MemoryFormat> memory_format_opt) {
+at::Tensor at_dpu::native::DPUNativeFunctions::empty(
+    c10::IntArrayRef size, c10::optional<at::ScalarType> dtype_opt,
+    c10::optional<c10::Layout> layout_opt,
+    c10::optional<c10::Device> device_opt, c10::optional<bool> pin_memory_opt,
+    c10::optional<c10::MemoryFormat> memory_format_opt) {
   auto device_ = c10::device_or_default(device_opt);
   AT_ASSERT(device_.type() == c10::DeviceType::PrivateUse1,
             OPS_ERROR(ErrCode::PARAM));
@@ -51,86 +52,84 @@ void AddImplDpu(T *out, T *self, T *other, T alpha, int64_t numel) {
     out[i] = self[i] + alpha * other[i];
   }
 }
+at::Tensor &at_dpu::native::DPUNativeFunctions::add_out(const at::Tensor &self,
+                                                    const at::Tensor &other,
+                                                    const c10::Scalar &alpha,
+                                                    at::Tensor &out) {
+  // 这里实现你的自定义 add 逻辑
+  // printf("[Info]Using custom add for PrivateUse1 backend\n");
+  // 获取张量的数据类型
+  auto dtype = self.scalar_type();
 
-TORCH_LIBRARY_IMPL(aten, PrivateUse1, m) {
-  m.impl(
-      "add.out",
-      [](const at::Tensor &self, const at::Tensor &other,
-         const c10::Scalar &alpha, at::Tensor &out) -> at::Tensor & {
-        // 这里实现你的自定义 add 逻辑
-        // printf("[Info]Using custom add for PrivateUse1 backend\n");
-        // 获取张量的数据类型
-        auto dtype = self.scalar_type();
+  // 根据数据类型选择适当的加法实现
+  switch (dtype) {
+  case at::ScalarType::Float: {
+    float *out_ptr = out.data_ptr<float>();
+    float *self_ptr = self.data_ptr<float>();
+    float *other_ptr = other.data_ptr<float>();
+    float alpha_value = alpha.to<float>();
 
-        // 根据数据类型选择适当的加法实现
-        switch (dtype) {
-        case at::ScalarType::Float: {
-          float *out_ptr = out.data_ptr<float>();
-          float *self_ptr = self.data_ptr<float>();
-          float *other_ptr = other.data_ptr<float>();
-          float alpha_value = alpha.to<float>();
+    AddImplDpu(out_ptr, self_ptr, other_ptr, alpha_value, self.numel());
+    break;
+  }
+  case at::ScalarType::Double: {
+    double *out_ptr = out.data_ptr<double>();
+    double *self_ptr = self.data_ptr<double>();
+    double *other_ptr = other.data_ptr<double>();
+    double alpha_value = alpha.to<double>();
 
-          AddImplDpu(out_ptr, self_ptr, other_ptr, alpha_value, self.numel());
-          break;
-        }
-        case at::ScalarType::Double: {
-          double *out_ptr = out.data_ptr<double>();
-          double *self_ptr = self.data_ptr<double>();
-          double *other_ptr = other.data_ptr<double>();
-          double alpha_value = alpha.to<double>();
+    AddImplDpu(out_ptr, self_ptr, other_ptr, alpha_value, self.numel());
+    break;
+  }
+  // 可以添加其他数据类型的情况...
+  default:
+    TORCH_CHECK(false, "Unsupported data type for PrivateUse1 add.out");
+  }
 
-          AddImplDpu(out_ptr, self_ptr, other_ptr, alpha_value, self.numel());
-          break;
-        }
-        // 可以添加其他数据类型的情况...
-        default:
-          TORCH_CHECK(false, "Unsupported data type for PrivateUse1 add.out");
-        }
-
-        return out;
-      });
-  m.impl("empty.memory_format", TORCH_FN(empty_dummy));
-  m.impl("to.dtype",
-         [](const at::Tensor &self, c10::ScalarType dtype, bool non_blocking,
-            bool copy, c10::optional<c10::MemoryFormat> memory_format) {
-           if (self.scalar_type() == dtype && !copy) {
-             return self;
-           }
-
-           c10::TensorOptions options = self.options().dtype(dtype);
-           at::Tensor result = at::empty_like(self, options, memory_format);
-
-           at::native::copy_(result, self, non_blocking);
-
-           return result;
-         });
-
-  m.impl("to.device", [](const at::Tensor &self, c10::Device device,
-                         c10::ScalarType dtype, bool non_blocking, bool copy,
-                         c10::optional<c10::MemoryFormat> memory_format) {
-    printf("[Info] call this one\n");
-    fflush(stdout);
-    if (self.device() == device && self.scalar_type() == dtype && !copy) {
-      return self;
-    }
-
-    c10::TensorOptions options = self.options().device(device).dtype(dtype);
-    at::Tensor result = at::empty_like(self, options, memory_format);
-
-    at::native::copy_(result, self, non_blocking);
-
-    return result;
-  });
+  return out;
 }
 
-void custom_cpu_fallback(const c10::OperatorHandle &op,
-                         torch::jit::Stack *stack) {
-  // Add some hints about new devices that do not support and need to
-  // fallback
-  // to cpu
-  at::native::cpu_fallback(op, stack);
+at::Tensor at_dpu::native::DPUNativeFunctions::to(
+    const at::Tensor &self, c10::ScalarType dtype, bool non_blocking, bool copy,
+    c10::optional<c10::MemoryFormat> memory_format) {
+  if (self.scalar_type() == dtype && !copy) {
+    return self;
+  }
+
+  c10::TensorOptions options = self.options().dtype(dtype);
+  at::Tensor result = at::empty_like(self, options, memory_format);
+
+  at::native::copy_(result, self, non_blocking);
+
+  return result;
 }
 
-TORCH_LIBRARY_IMPL(_, PrivateUse1, m) {
-  m.fallback(torch::CppFunction::makeFromBoxedFunction<&custom_cpu_fallback>());
+at::Tensor at_dpu::native::DPUNativeFunctions::to(
+    const at::Tensor &self, c10::Device device, c10::ScalarType dtype,
+    bool non_blocking, bool copy,
+    c10::optional<c10::MemoryFormat> memory_format) {
+  printf("[Info] call this one\n");
+  fflush(stdout);
+  if (self.device() == device && self.scalar_type() == dtype && !copy) {
+    return self;
+  }
+
+  c10::TensorOptions options = self.options().device(device).dtype(dtype);
+  at::Tensor result = at::empty_like(self, options, memory_format);
+
+  at::native::copy_(result, self, non_blocking);
+
+  return result;
 }
+
+// void custom_cpu_fallback(const c10::OperatorHandle &op,
+//                          torch::jit::Stack *stack) {
+//   // Add some hints about new devices that do not support and need to
+//   // fallback
+//   // to cpu
+//   at::native::cpu_fallback(op, stack);
+// }
+
+// TORCH_LIBRARY_IMPL(_, PrivateUse1, m) {
+//   m.fallback(torch::CppFunction::makeFromBoxedFunction<&custom_cpu_fallback>());
+// }

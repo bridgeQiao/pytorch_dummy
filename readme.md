@@ -7,6 +7,9 @@
 ## compile library
 ```bash
 cd pytorch_dummy
+# get codegen code
+bash generate_code.sh python3
+# get library
 python3 setup.py build_ext --inplace
 ```
 需要预先安装好torch包，正常编译会得到`torch_dpu/_C.*.so`。
@@ -22,4 +25,3 @@ x = torch.empty((2,2,), device='privateuseone')
 y = torch.empty((2,2,), device='privateuseone')
 x + y
 ```
-

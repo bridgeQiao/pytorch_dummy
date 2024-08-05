@@ -1,0 +1,9 @@
+backend: PrivateUse1
+class_name: DPUNativeFunctions
+cpp_namespace: at_dpu::native
+
+supported:
+  - empty.memory_format
+  - add.out
+  - to.device
+  - to.dtype
