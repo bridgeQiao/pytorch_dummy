@@ -601,7 +601,7 @@ def run(
             output_dir,
             class_name,
             backend_indices,
-            grouped_native_functions,
+            native_functions,
             backend_key,
             dispatch_key,
             selector,
