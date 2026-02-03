@@ -1,3 +1,5 @@
+#include <torch/torch.h>
+
 #include "torch_dpu/csrc/aten/PrivateUse1NativeFunctions.h"
 
 at::Tensor at_dpu::native::DPUNativeFunctions::to(

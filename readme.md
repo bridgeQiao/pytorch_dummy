@@ -1,27 +1,39 @@
-# Brief
+# Overview
 
-仿照[ascend/pytorch](https://github.com/ascend/pytorch)写的pytorch backend，基于PrivateUse1，torch==2.3，理论上 2.2 应该也可以跑，没试过。吐槽下，ascend_pytorch的setup.py也太老了，不更新成最新的。
+This project is a PyTorch backend modeled after [ascend/pytorch](https://github.com/ascend/pytorch), built on top of `PrivateUse1`.
 
-# useage
+**Notice:** Minimum supported PyTorch version is `2.7.0`.
 
-## compile library
+# Usage
+
+## Build the extension
 ```bash
 cd pytorch_dummy
-# get codegen code
+# Generate codegen stubs.
+# Use the Python binary from your target environment (python or python3, or an absolute path).
+# If this fails, compare codegen/gen_backend_stubs.py with torchgen/gen_backend_stubs.py.
 bash generate_code.sh python3
-# get library
-python3 setup.py build_ext --inplace
+
+# Build and install the extension (editable).
+pip install -e . --no-build-isolation
 ```
-需要预先安装好torch包，正常编译会得到`torch_dpu/_C.*.so`。
+You must install PyTorch first. A successful build produces `torch_dpu/_C.*.so`.
 
-## use it
+## Use it
 
-启动python，然后输入：
+Start Python and run:
 ```python
 import torch
 import torch_dpu
-# only support aten::empty/aten::add, you need implement more kernels if you want
-x = torch.empty((2,2,), device='privateuseone')
-y = torch.empty((2,2,), device='privateuseone')
+# Only aten::empty and aten::add are supported.
+# Implement additional kernels if you need more ops.
+x = torch.empty((2,2,), device='dpu')
+y = torch.empty((2,2,), device='dpu')
 x + y
 ```
+
+## Troubleshooting
+
+- `symbol not found in flat namespace '__xxxx'`
+  - Ensure your build uses `--no-build-isolation` so it links against the PyTorch already installed in your environment.
+  - Remove any old `torch_dpu/_C.*.so` artifacts and rebuild if the error persists.
