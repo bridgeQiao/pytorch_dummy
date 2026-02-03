@@ -4,6 +4,7 @@ cpp_namespace: at_dpu::native
 
 supported:
   - empty.memory_format
+  - empty_strided
   - add.out
   - to.device
   - to.dtype

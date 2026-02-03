@@ -27,8 +27,8 @@ import torch
 import torch_dpu
 # Only aten::empty and aten::add are supported.
 # Implement additional kernels if you need more ops.
-x = torch.empty((2,2,), device='dpu')
-y = torch.empty((2,2,), device='dpu')
+x = torch.ones([3,3], dtype=torch.int32).to('dpu')
+y = torch.ones([3,3], dtype=torch.int32).to('dpu')
 x + y
 ```
 

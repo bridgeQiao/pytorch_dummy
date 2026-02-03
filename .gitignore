@@ -3,6 +3,7 @@ build/
 __pycache__/
 *.egg-info/
 *.so
+
 PrivateUse1NativeFunctions.h
 RegisterPrivateUse1.cpp
 
