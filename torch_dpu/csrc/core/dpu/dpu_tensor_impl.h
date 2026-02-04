@@ -28,6 +28,8 @@ public:
   shallow_copy_and_detach(c10::VariableVersion &&version_counter,
                           bool allow_tensor_metadata_change) const final;
 
+  c10::Device device_custom() const override;
+
 public:
   DPUTensorImpl(const DPUTensorImpl &) = delete;
   DPUTensorImpl &operator=(const DPUTensorImpl &) = delete;

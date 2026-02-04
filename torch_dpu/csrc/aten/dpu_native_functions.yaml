@@ -6,5 +6,20 @@ supported:
   - empty.memory_format
   - empty_strided
   - add.out
+
+  - _copy_from
+  - _to_copy
   - to.device
   - to.dtype
+
+  - view
+  - as_strided
+  - _local_scalar_dense
+  - resize_
+  - cat
+  - set_.source_Storage
+  - fill_.Scalar
+  - eq.Tensor_out
+  - isfinite
+  - ne.Scalar_out
+  - bitwise_and.Tensor_out

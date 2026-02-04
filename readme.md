@@ -1,39 +1,53 @@
-# Overview
+# PyTorch DPU Backend
 
-This project is a PyTorch backend modeled after [ascend/pytorch](https://github.com/ascend/pytorch), built on top of `PrivateUse1`.
+A minimal PyTorch backend built on `PrivateUse1`, modeled after [ascend/pytorch](https://github.com/ascend/pytorch).
 
-**Notice:** Minimum supported PyTorch version is `2.7.0`.
+**Minimum PyTorch version:** 2.7.0
 
-# Usage
+## Build
 
-## Build the extension
 ```bash
-cd pytorch_dummy
-# Generate codegen stubs.
-# Use the Python binary from your target environment (python or python3, or an absolute path).
-# If this fails, compare codegen/gen_backend_stubs.py with torchgen/gen_backend_stubs.py.
+# Install PyTorch first
+pip install torch==2.7.0
+
+# Generate codegen stubs
 bash generate_code.sh python3
 
-# Build and install the extension (editable).
+# Build and install (editable)
 pip install -e . --no-build-isolation
 ```
-You must install PyTorch first. A successful build produces `torch_dpu/_C.*.so`.
 
-## Use it
+A successful build produces `torch_dpu/_C.*.so`.
 
-Start Python and run:
+## Quick Start
+
 ```python
 import torch
 import torch_dpu
-# Only aten::empty and aten::add are supported.
-# Implement additional kernels if you need more ops.
-x = torch.ones([3,3], dtype=torch.int32).to('dpu')
-y = torch.ones([3,3], dtype=torch.int32).to('dpu')
-x + y
+
+# Create tensors on DPU device
+x = torch.ones(3, 3, device="dpu")
+y = torch.empty(3, 3, device="dpu").fill_(2.0)
+
+# Basic operations
+z = x + y                     # addition
+result = torch.cat([x, y])    # concatenation
 ```
+
+## Supported Operators
+
+| Category | Operators |
+|----------|-----------|
+| Creation | `empty`, `empty_strided` |
+| Math | `add`, `isfinite` |
+| Comparison | `eq`, `ne` |
+| Manipulation | `view`, `as_strided`, `resize_`, `cat`, `fill_`, `set_` |
+| Copy | `to`, `copy_` |
+| Access | `item()` |
+
+See `docs/skills.md` for adding new operators.
 
 ## Troubleshooting
 
-- `symbol not found in flat namespace '__xxxx'`
-  - Ensure your build uses `--no-build-isolation` so it links against the PyTorch already installed in your environment.
-  - Remove any old `torch_dpu/_C.*.so` artifacts and rebuild if the error persists.
+- **Symbol not found errors**: Use `--no-build-isolation` and remove old `torch_dpu/_C.*.so` artifacts before rebuilding
+- **Compilation fails**: Report errors - do not proceed to verification

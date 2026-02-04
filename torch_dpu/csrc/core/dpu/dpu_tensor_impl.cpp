@@ -14,6 +14,7 @@ namespace torch_dpu
                         data_type)
   {
     is_non_overlapping_and_dense_ = false;
+    set_custom_device(true);
   }
 
   void DPUTensorImpl::shallow_copy_from(const c10::intrusive_ptr<TensorImpl> &impl)
@@ -57,4 +58,9 @@ namespace torch_dpu
     return impl;
   }
   DPUTensorImpl::~DPUTensorImpl() {}
+
+  c10::Device DPUTensorImpl::device_custom() const
+  {
+    return c10::Device(c10::DeviceType::PrivateUse1, 0);
+  }
 }
